@@ -9,7 +9,6 @@ class Tag(models.Model):
     color = models.CharField('Цвет в HEX', max_length=10)
     slug = models.SlugField('Уникальный слаг', max_length=200, unique=True)
 
-
     class Meta:
         verbose_name = "Тег"
         verbose_name_plural = "Теги"

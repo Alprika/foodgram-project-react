@@ -48,6 +48,7 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
         ),
     )
 
+
 class RecipeReadSerializer(serializers.ModelSerializer):
     tags = TagSerializer(
         many=True,
