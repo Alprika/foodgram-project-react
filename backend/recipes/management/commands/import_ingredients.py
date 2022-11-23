@@ -6,14 +6,18 @@ from recipes.models import Ingredient
 
 
 class Command(BaseCommand):
-    help = "Import Users from `../data/ingredients.csv`"
+    help = 'Заполнение БД'
 
     def handle(self, *args, **kwargs):
-        with open("data/ingredients.csv", encoding="utf-8") as csvfile:
-            csvreader = csv.reader(csvfile)
-            next(csvreader)
-            for row in csvreader:
-                Ingredient.objects.get_or_create(
-                    name=row[0],
-                    measurement_unit=row[1],
-                )
+        with open('./data/ingredients.csv',
+                  newline='', encoding='UTF-8') as file:
+            file_reader = csv.reader(file)
+            for row in file_reader:
+                name, measurement_unit = row
+                if name != 'name':
+                    Ingredient.objects.get_or_create(
+                        name=name,
+                        measurement_unit=measurement_unit
+                    )
+
+        self.stdout.write(self.style.SUCCESS('Successfully'))
