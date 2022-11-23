@@ -1,5 +1,7 @@
 import os
-import sys
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -88,6 +90,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+AUTH_USER_MODEL = 'users.MyUser'
 
 STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
