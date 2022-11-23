@@ -5,8 +5,6 @@ from .models import Subscription
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = (
-        "pk",
-        "user",
-        "author",
-    )
+    list_display = ('user', 'author')
+    search_fields = ('user', 'author')
+    list_filter = ('user', 'author')

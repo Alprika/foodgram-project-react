@@ -23,8 +23,9 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "djoser",
     "django_filters",
-    "users",
-    "recipes",
+    'api.apps.ApiConfig',
+    'users.apps.UsersConfig',
+    'recipes.apps.RecipesConfig',
 ]
 
 MIDDLEWARE = [
@@ -90,7 +91,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-AUTH_USER_MODEL = 'users.MyUser'
+AUTH_USER_MODEL = 'users.User'
 
 STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")

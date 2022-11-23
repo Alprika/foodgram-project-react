@@ -1,12 +1,13 @@
 from djoser.views import UserViewSet
 from rest_framework import status
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Subscription, User
 from .pagination import UsersPagination
-from .serializers import SubscribeSerializer
+from recipes.serializers import FollowRecipeSerializer, SubscriptionSerializer
 
 
 class CustomUserViewSet(UserViewSet):
@@ -36,7 +37,7 @@ class CustomUserViewSet(UserViewSet):
                 user=user,
                 author=author,
             )
-            serializer = SubscribeSerializer(
+            serializer = SubscriptionSerializer(
                 author,
                 context={'request': request},
             )
@@ -55,16 +56,23 @@ class CustomUserViewSet(UserViewSet):
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
     @action(
-        detail=False,
-        permission_classes=[IsAuthenticated],
+        methods=('post', 'delete'),
+        url_path='subscribe',
+        detail=True,
+        permission_classes=(IsAuthenticated,),
     )
-    def subscriptions(self, request):
-        subscriptions_list = self.paginate_queryset(
-            self.request.user.subscribe.all()
-        )
-        serializer = SubscribeSerializer(
-            subscriptions_list, many=True, context={
-                'request': request
-            }
-        )
-        return self.get_paginated_response(serializer.data)
+    def subscribe(self, request, id):
+        user = request.user
+        author = get_object_or_404(User, id=id)
+        if request.method == 'POST':
+            data = {'user': user.id, 'author': id}
+            serializer = FollowRecipeSerializer(
+                data=data,
+                context={'request': request}
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        following = get_object_or_404(Subscription, user=user, author=author)
+        following.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

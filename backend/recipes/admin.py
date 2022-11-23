@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
+from .models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
                      ShoppingCart, Tag)
 
 
@@ -12,7 +12,8 @@ class TagAdmin(admin.ModelAdmin):
         "color",
         "slug",
     )
-
+    search_fields = ('name',)
+    list_filter = ('name',)
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
@@ -23,10 +24,10 @@ class IngredientAdmin(admin.ModelAdmin):
     search_fields = (
         'name',
     )
-    list_filter = ("name",)
+    list_filter = ('measurement_unit',)
 
 
-@admin.register(IngredientsInRecipe)
+@admin.register(IngredientInRecipe)
 class LinksAdmin(admin.ModelAdmin):
     pass
 
@@ -34,18 +35,23 @@ class LinksAdmin(admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = (
-        "name",
-        "author",
-        "count_favorites",
+        'id',
+        'author',
+        'name',
+        'text',
+        'cooking_time',
+        'pub_date',
+        'count_favorite'
     )
     list_filter = (
         "author",
         "name",
         "tags",
     )
+    search_fields = ('author__username', 'name',)
 
-    def count_favorites(self, obj):
-        return obj.favorites.count()
+    def count_favorite(self, obj):
+        return obj.favorite_recipe.count()
 
 
 @admin.register(Favorite)
@@ -55,6 +61,8 @@ class FavoriteAdmin(admin.ModelAdmin):
         "user",
         "recipe",
     )
+    search_fields = ('user',)
+    list_filter = ('user',)
 
 
 @admin.register(ShoppingCart)
@@ -64,3 +72,5 @@ class ShoppingCartAdmin(admin.ModelAdmin):
         "user",
         "recipe",
     )
+    search_fields = ('user',)
+    list_filter = ('user',)

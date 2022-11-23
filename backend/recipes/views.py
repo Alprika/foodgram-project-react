@@ -6,11 +6,11 @@ from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
 
-from .filters import IngredientSearchFilter, RecipeFilter
-from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
+from api.filters import IngredientInRecipe, RecipeFilter
+from .models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
                      ShoppingCart, Tag)
-from .pagination import RecipePagination
-from .permissions import IsAuthorOrAdminOrReadOnly
+from api.pagination import RecipePagination
+from api.permissions import IsAdminOrReadOnly
 from .serializers import (IngredientSerializer, RecipeReadSerializer,
                           RecipeCreateSerializer,
                           ShortRecipeSerializer, TagSerializer)
@@ -19,20 +19,23 @@ from .serializers import (IngredientSerializer, RecipeReadSerializer,
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+    pagination_class = None
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
+    permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
-    filterset_class = IngredientSearchFilter
+    filterset_class = IngredientInRecipe
     search_fields = ('^name',)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     pagination_class = RecipePagination
-    permission_classes = (IsAuthorOrAdminOrReadOnly,)
+    permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 
@@ -81,10 +84,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def favorite(self, request, pk=None):
         model = Favorite
-        if request.method == "POST":
-            error_data = {"errors": "Рецепт уже добавлен в избранное"}
+        if request.method == 'POST':
+            error_data = {'errors': 'Рецепт добавлен в избранное'}
             return self._do_post_method(request, model, error_data)
-        error_data = {"errors": "Рецепт уже удален из избранного"}
+        error_data = {'errors': 'Рецепт удален из избранного'}
         return self._do_delete_method(request, model, error_data)
 
     @action(
@@ -94,20 +97,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def shopping_cart(self, request, pk=None):
         model = ShoppingCart
-        if request.method == "POST":
-            error_data = {"errors": "Рецепт уже добавлен в корзину"}
+        if request.method == 'POST':
+            error_data = {'errors': 'Рецепт уже добавлен в корзину'}
             return self._do_post_method(request, model, error_data)
-        error_data = {"errors": "Рецепт уже удален из корзины"}
+        error_data = {'errors': 'Рецепт уже удален из корзины'}
         return self._do_delete_method(request, model, error_data)
 
     @action(
         detail=False,
-        methods=["get"],
+        methods=['get'],
         permission_classes=[IsAuthenticated],
     )
     def download_shopping_cart(self, request):
         user = request.user
-        ingredient_queryset = IngredientsInRecipe.objects.filter(
+        ingredient_queryset = IngredientInRecipe.objects.filter(
             recipes__shoppingcart__user=user
         ).values(
             'ingredient__name',
