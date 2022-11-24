@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from users.models import Subscription, User
 
-from .recipes_serializers import FollowRecipeSerializer, SubscriptionSerializer
+from .users_serializers import FollowRecipeSerializer, SubscriptionSerializer
 
 
 class CustomUserViewSet(UserViewSet):
