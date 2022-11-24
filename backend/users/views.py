@@ -7,12 +7,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Subscription, User
-from .pagination import UsersPagination
+from api.pagination import RecipePagination
 
 
 class CustomUserViewSet(UserViewSet):
     queryset = User.objects.all().order_by('id')
-    pagination_class = UsersPagination
+    pagination_class = RecipePagination
     search_fields = ('username',)
 
     @action(

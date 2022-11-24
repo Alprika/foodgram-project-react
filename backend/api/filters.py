@@ -7,7 +7,6 @@ class RecipeFilter(filters.FilterSet):
         field_name='tags__slug',
         to_field_name='slug',
         queryset=Tag.objects.all(),
-        label='Tags'
     )
     author = filters.CharFilter(
         field_name='author__id',
@@ -22,15 +21,14 @@ class RecipeFilter(filters.FilterSet):
         fields = ('tags', 'author', 'is_favorited', 'is_in_shopping_cart')
 
     def filter_is_favorited(self, queryset, name, value):
-        if value:
+        if self.request.user.is_authenticated and value:
             return queryset.filter(favorite_recipe__user=self.request.user)
         return queryset
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
-        if value:
+        if self.request.user.is_authenticated and value:
             return queryset.filter(
-                shopping_cart_recipe__user=self.request.user
-            )
+                shopping_cart_recipe__user=self.request.user)
         return queryset
 
 

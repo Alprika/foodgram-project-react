@@ -155,7 +155,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         )
 
     def _add_tags_and_ingredients(self, recipe, tags_data, ingredients_data):
-        recipe.tags.set(tags_data)
         recipe.ingredients.set(IngredientInRecipe.objects.bulk_create([
             IngredientInRecipe(
                 ingredient=item.get('ingredient'),

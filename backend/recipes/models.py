@@ -17,7 +17,7 @@ class Tag(models.Model):
         verbose_name_plural = 'Теги'
 
     def __str__(self):
-        return self.slug[:15]
+        return self.name
 
 
 class Ingredient(models.Model):
