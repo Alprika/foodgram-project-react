@@ -1,9 +1,10 @@
+from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.contrib.auth import get_user_model
 from users.models import User
 
 User = get_user_model()
+
 
 class Tag(models.Model):
     name = models.CharField('Название', max_length=100, unique=True)
@@ -37,6 +38,7 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return f'{self.name} {self.measurement_unit}'
+
 
 class Recipe(models.Model):
     tags = models.ManyToManyField(

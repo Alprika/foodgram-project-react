@@ -4,10 +4,12 @@ from rest_framework import serializers, validators
 from rest_framework.validators import UniqueTogetherValidator
 from users.models import Subscription
 from users.serializers import CustomUserSerializer
+
 from .models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
                      ShoppingCart, Tag)
 
 User = get_user_model()
+
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,6 +20,7 @@ class TagSerializer(serializers.ModelSerializer):
             'color',
             'slug',
         )
+
 
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,7 +37,6 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
         source='ingredient.measurement_unit',
     )
     amount = serializers.IntegerField()
-
 
     class Meta:
         model = IngredientInRecipe
@@ -179,7 +181,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return self._add_tags_and_ingredients(
             instance, tags_data, ingredients_data
         )
-        
+
+
 class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
@@ -197,14 +200,16 @@ class FollowSerializer(serializers.ModelSerializer):
         context = {'request': request}
         return SubscriptionSerializer(instance.author, context=context).data
 
-class FollowRecipeSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Recipe
-            fields = ('id', 'name', 'image', 'cooking_time')
-            ordering = ('id',)
 
-        def to_representation(self, instance):
-            return RecipeReadSerializer(instance).data       
+class FollowRecipeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
+        ordering = ('id',)
+
+    def to_representation(self, instance):
+        return RecipeReadSerializer(instance).data
+
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField(

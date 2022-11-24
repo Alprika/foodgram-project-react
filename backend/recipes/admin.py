@@ -15,6 +15,7 @@ class TagAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     list_filter = ('name',)
 
+
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = (
