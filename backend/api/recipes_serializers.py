@@ -222,7 +222,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                                     context=context).data
 
 
-
 class ShoppingCartSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShoppingCart
