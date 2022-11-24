@@ -4,16 +4,16 @@ from api.permissions import IsAdminOrReadOnly
 from django.db.models import Sum
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
+from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
+                            ShoppingCart, Tag)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
 
-from .models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
-                     ShoppingCart, Tag)
-from .serializers import (IngredientSerializer, RecipeCreateSerializer,
-                          RecipeReadSerializer, ShortRecipeSerializer,
-                          TagSerializer)
+from .recipes_serializers import (IngredientSerializer, RecipeCreateSerializer,
+                                  RecipeReadSerializer, ShortRecipeSerializer,
+                                  TagSerializer)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):

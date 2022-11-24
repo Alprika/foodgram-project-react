@@ -1,13 +1,13 @@
+from api.pagination import RecipePagination
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
-from recipes.serializers import FollowRecipeSerializer, SubscriptionSerializer
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from users.models import Subscription, User
 
-from .models import Subscription, User
-from api.pagination import RecipePagination
+from .recipes_serializers import FollowRecipeSerializer, SubscriptionSerializer
 
 
 class CustomUserViewSet(UserViewSet):

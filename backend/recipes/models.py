@@ -43,6 +43,7 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     tags = models.ManyToManyField(
         Tag,
+        related_name='tag',
         verbose_name='Список тегов',
     )
     author = models.ForeignKey(
