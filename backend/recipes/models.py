@@ -37,7 +37,23 @@ class Ingredient(models.Model):
         verbose_name_plural = 'Ингредиенты'
 
     def __str__(self):
-        return f'{self.name} {self.measurement_unit}'
+        return f'{self.name}'
+
+
+class IngredientInRecipe(models.Model):
+    ingredient = models.ForeignKey(
+        Ingredient,
+        on_delete=models.CASCADE,
+        verbose_name='Ингредиент',
+    )
+    amount = models.PositiveIntegerField(verbose_name='Количество')
+
+    class Meta:
+        verbose_name = 'Количество ингридиента'
+        verbose_name_plural = 'Количество ингридиентов'
+
+    def __str__(self):
+        return f'{self.ingredient} * {self.amount}'
 
 
 class Recipe(models.Model):
@@ -57,10 +73,9 @@ class Recipe(models.Model):
         verbose_name='Название',
     )
     ingredients = models.ManyToManyField(
-        Ingredient,
+        IngredientInRecipe,
         verbose_name='Список ингредиентов',
         related_name='recipes',
-        through='IngredientInRecipe',
     )
     image = models.ImageField(
         upload_to='recipes/images/',
@@ -89,36 +104,6 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class IngredientInRecipe(models.Model):
-    recipe = models.ForeignKey(
-        Recipe,
-        verbose_name='Рецепт',
-        on_delete=models.CASCADE,
-        related_name='ingredient_recipe'
-    )
-    ingredient = models.ForeignKey(
-        Ingredient,
-        verbose_name='Ингредиент',
-        on_delete=models.CASCADE,
-        related_name='ingredient_recipe'
-    )
-    amount = models.PositiveSmallIntegerField(
-        verbose_name='Количество ингрeдиента',
-        validators=(
-            MinValueValidator(
-                1, message='Количество не может быть меньше 1!'),
-        )
-    )
-
-    class Meta:
-        verbose_name = 'Количество ингредиента'
-        verbose_name_plural = 'Количество ингредиентов'
-
-    def __str__(self):
-        return (f'{self.ingredient.name} - {self.amount}'
-                f' {self.ingredient.measurement_unit}')
 
 
 class Favorite(models.Model):
