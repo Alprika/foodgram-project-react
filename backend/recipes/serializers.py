@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers, validators
-
+from rest_framework.validators import UniqueTogetherValidator
+from users.models import Subscription
 from users.serializers import CustomUserSerializer
 from .models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
                      ShoppingCart, Tag)
@@ -179,7 +180,23 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             instance, tags_data, ingredients_data
         )
         
- 
+class FollowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscription
+        fields = ('user', 'author')
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Subscription.objects.all(),
+                fields=('user', 'author'),
+                message='Нельзя повторно подписаться на автора.'
+            )
+        ]
+
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        context = {'request': request}
+        return SubscriptionSerializer(instance.author, context=context).data
+
 class FollowRecipeSerializer(serializers.ModelSerializer):
         class Meta:
             model = Recipe
