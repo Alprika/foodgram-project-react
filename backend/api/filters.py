@@ -8,10 +8,6 @@ class RecipeFilter(filters.FilterSet):
         to_field_name='slug',
         queryset=Tag.objects.all(),
     )
-    author = filters.CharFilter(
-        field_name='author__id',
-        lookup_expr='icontains'
-    )
     is_favorited = filters.BooleanFilter(method='filter_is_favorited')
     is_in_shopping_cart = filters.BooleanFilter(
         method='filter_is_in_shopping_cart')
@@ -40,4 +36,4 @@ class IngredientInRecipe(filters.FilterSet):
 
     class Meta:
         model = Ingredient
-        fields = ('name', 'measurement_unit')
+        fields = ('name',)
