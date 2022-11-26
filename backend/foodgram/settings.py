@@ -10,7 +10,7 @@ SECRET_KEY = 'p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['158.160.15.36', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
 
 
 INSTALLED_APPS = [
@@ -23,10 +23,11 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "djoser",
-    "django_filters",
     'recipes.apps.RecipesConfig',
-    'api.apps.ApiConfig',
     'users.apps.UsersConfig',
+    'api.apps.ApiConfig',
+    "django_filters",
+    
 ]
 
 MIDDLEWARE = [
@@ -44,15 +45,15 @@ ROOT_URLCONF = "foodgram.urls"
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [TEMPLATES_DIR],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
@@ -107,11 +108,11 @@ USE_TZ = True
 
 AUTH_USER_MODEL = 'users.User'
 
-STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = 'recipes/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'recipes/static/')
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = '/recipes/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '/recipes/media/')
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -128,7 +129,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 6,
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
+    
     ),
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
 DJOSER = {

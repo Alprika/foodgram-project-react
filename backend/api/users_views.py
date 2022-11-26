@@ -6,8 +6,10 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from users.models import Subscription, User
+from recipes.models import (Recipe)
 
 from .users_serializers import FollowRecipeSerializer, SubscriptionSerializer
+from .recipes_serializers import RecipeReadSerializer
 
 
 class CustomUserViewSet(UserViewSet):
@@ -76,3 +78,14 @@ class CustomUserViewSet(UserViewSet):
         following = get_object_or_404(Subscription, user=user, author=author)
         following.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    @action(methods=('GET'),
+        url_path='subscribe2',
+        detail=True,
+        permission_classes=(IsAuthenticated,),
+    )
+    def subscribe(self, request, id):
+        author = get_object_or_404(User, id=id)
+        posts=Recipe.objects.filter(author=author)
+        data = RecipeReadSerializer(posts, many=True)
+        return Response(data.data)
